@@ -13,8 +13,7 @@ const Part = ({name, exercises}) =>{
   )
 }
 
-const Content = (props) =>{
-  const {parts} = props
+const Content = ({parts}) =>{
   return (
     <div>
       <Part name={parts[0]['name']} exercises={parts[0]['exercises']}/>
