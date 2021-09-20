@@ -9,7 +9,7 @@ export const Filter = ({value, changeValue}) => {
         </div>
       </form>
     )
-  }
+}
   
 export const PersonForm = (props) => {
     const {name, number, changeNumber, changeName, add} = props
@@ -29,10 +29,10 @@ export const PersonForm = (props) => {
 }
   
 export const Persons = ({persons}) => {
-return (
-    <div>
-    {persons.map(person => 
-    <p key={person.name}>{person.name} {person.number}</p>)}
-    </div>
-)
+    return (
+        <div>
+        {persons.map(person => 
+        <p key={person.name}>{person.name} {person.number}</p>)}
+        </div>
+    )
 }
