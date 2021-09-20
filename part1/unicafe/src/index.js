@@ -7,24 +7,24 @@ const Button = ({text, handleOnClick}) =>(
   <button onClick={handleOnClick}>{text}</button>
 )
 
-const Content = ({content}) => <p>{content[0]} {content[1]}</p>
+const Statistic = ({text, value}) =><p>{text} {value}</p>
 
 const Statistics = ({good, neutral, bad}) =>{
   const all = good + neutral + bad
   if (all === 0){
     return <p>No feedback given</p>
   }
-  
+
   const average = (good - bad) / all
   const positive = String((good/all)*100)+'%'
   return (
     <div>
-      <Content content={['good',good]}/>
-      <Content content={['neutral',neutral]}/>
-      <Content content={['bad',bad]}/>
-      <Content content={['all',all]}/>
-      <Content content={['average',average]}/>
-      <Content content={['positive', positive]}/>
+      <Statistic text={'good'} value={good} />
+      <Statistic text={'neutral'} value={neutral} />
+      <Statistic text={'bad'} value={bad} />
+      <Statistic text={'all'} value={all} />
+      <Statistic text={'average'} value={average} />
+      <Statistic text={'positive'} value={positive} />
     </div>
   )
 }
