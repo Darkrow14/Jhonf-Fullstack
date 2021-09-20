@@ -7,8 +7,12 @@ const Button = ({text, handleOnClick}) =>(
   <button onClick={handleOnClick}>{text}</button>
 )
 
-const Statistic = ({text, value}) =><p>{text} {value}</p>
-
+const Statistic = ({text, value}) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+)
 const Statistics = ({good, neutral, bad}) =>{
   const all = good + neutral + bad
   if (all === 0){
