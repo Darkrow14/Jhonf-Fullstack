@@ -6,8 +6,7 @@ const Header = ({ course }) => {
   }
   
   const Total = ({ parts }) => {
-    const exercises = parts.map((part) => part.exercises)
-    const sum = exercises.reduce((a, b) => a + b, 0)
+    const sum = parts.reduce((prev, actual)=> prev + actual.exercises, 0)
     return(
       <b> Number of exercises {sum}</b>
     ) 
