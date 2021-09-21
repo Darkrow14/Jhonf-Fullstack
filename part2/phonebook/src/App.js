@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import {Persons, PersonForm, Filter} from './components/Persons.js'
+
+
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [loading, setLoading ] = useState(true)
 
 
   const addPerson = (event) =>{
@@ -19,6 +18,7 @@ const App = () => {
       alert(newName + ' is already added to phonebook')
     }else{
       const person = {
+        id:persons.length+1,
         name: newName,
         number: newNumber
       }
@@ -37,6 +37,16 @@ const App = () => {
   const personsToShow = !filter ? persons :
   persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
+  const hook = () => {
+    axios.get('http://localhost:3001/persons')
+    .then((response) => {
+      setPersons(response.data)
+    })
+    setLoading(false)
+  }
+
+  useEffect(hook, [])
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -49,7 +59,7 @@ const App = () => {
             changeName={changeName} 
             add={addPerson}/>
       <h2>Numbers</h2>
-      <Persons persons={personsToShow}/>
+      {loading? 'loading...':<Persons persons={personsToShow}/>}
     </div>
   )
 }
