@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import {Persons, PersonForm, Filter} from './components/Persons.js'
+import {Persons, PersonForm, Filter} from './components/Form.js'
+import {getPersons, createPerson, deletePerson, updatePerson} from './services/persons.js'
 
 
 const App = () => {
@@ -10,24 +10,42 @@ const App = () => {
   const [ filter, setFilter ] = useState('')
   const [loading, setLoading ] = useState(true)
 
-
   const addPerson = (event) =>{
     event.preventDefault()
     const names = persons.map(person => person.name)
     if (names.includes(newName)){
-      alert(newName + ' is already added to phonebook')
+      const person = persons.find(p => p.name === newName)
+      const personChanged = {...person, number:newNumber}
+      const result = window.confirm(`${newName} is already added to phonebook, replace the olnumber with a new one?`)
+      if (result){
+        updatePerson(person.id, personChanged)
+        .then(data => setPersons(persons.map(p => p.name !== newName ? p: data)))
+      }
     }else{
       const person = {
         id:persons.length+1,
         name: newName,
         number: newNumber
       }
-      setPersons(persons.concat(person))
-      setNewName('')
-      setNewNumber('')
+      createPerson(person)
+      .then(data => {
+        setPersons(persons.concat(data))
+        setNewName('')
+        setNewNumber('')
+      })
     }
   }
 
+  const delPerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    const result = window.confirm(`Delete ${person.name}?`)
+    if (result){
+      deletePerson(id)
+      .then((data) => {
+        setPersons(data)
+      })
+    }
+  }
   const changeName = (event) => setNewName(event.target.value)
 
   const changeNumber = (event) => setNewNumber(event.target.value)
@@ -37,15 +55,15 @@ const App = () => {
   const personsToShow = !filter ? persons :
   persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
-  const hook = () => {
-    axios.get('http://localhost:3001/persons')
-    .then((response) => {
-      setPersons(response.data)
+  const hookGet = () => {
+    getPersons()
+    .then((data) => {
+      setPersons(data)
     })
     setLoading(false)
   }
 
-  useEffect(hook, [])
+  useEffect(hookGet, [])
 
   return (
     <div>
@@ -57,9 +75,10 @@ const App = () => {
             number={newNumber} 
             changeNumber={changeNumber} 
             changeName={changeName} 
-            add={addPerson}/>
+            add={addPerson}
+            />
       <h2>Numbers</h2>
-      {loading? 'loading...':<Persons persons={personsToShow}/>}
+      {loading? 'loading...':<Persons persons={personsToShow} del = {delPerson}/>}
     </div>
   )
 }

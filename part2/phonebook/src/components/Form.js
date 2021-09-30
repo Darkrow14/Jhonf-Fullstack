@@ -10,9 +10,12 @@ export const Filter = ({value, changeValue}) => {
       </form>
     )
 }
+
+
   
 export const PersonForm = (props) => {
     const {name, number, changeNumber, changeName, add} = props
+    
     return (
         <form onSubmit={add}>
         <div>
@@ -27,12 +30,18 @@ export const PersonForm = (props) => {
         </form>
     )
 }
-  
-export const Persons = ({persons}) => {
+
+const Button = ({id,del}) => {
+    return <button onClick={() => del(id)}>delete</button>
+}
+export const Persons = ({persons, del}) => {
     return (
         <div>
-        {persons.map(person => 
-        <p key={person.id}>{person.name} {person.number}</p>)}
+            {persons.map(person =>
+            <div key={person.id}>
+                {person.name} {person.number}<Button id={person.id} del={del}/>
+            </div>
+            )}
         </div>
     )
 }
