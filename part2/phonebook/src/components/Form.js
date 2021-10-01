@@ -36,12 +36,12 @@ const Button = ({id,del}) => {
 }
 export const Persons = ({persons, del}) => {
     return (
-        <div>
+        <ul>
             {persons.map(person =>
-            <div key={person.id}>
+            <li key={person.id}>
                 {person.name} {person.number}<Button id={person.id} del={del}/>
-            </div>
+            </li>
             )}
-        </div>
+        </ul>
     )
 }
