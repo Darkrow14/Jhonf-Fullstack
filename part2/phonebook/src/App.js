@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import {Persons, PersonForm, Filter} from './components/Form.js'
 import {getPersons, createPerson, deletePerson, updatePerson} from './services/persons.js'
-
-
+import './index.css'
+const Notification = ({message}) => {
+  if (message[0] === null) {
+    return null
+  }
+ const type = message[1]
+  return (
+    <div className={type}>
+      {message[0]}
+    </div>
+  )
+}
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
   const [loading, setLoading ] = useState(true)
+  const [message, setMessage] = useState([null])
 
   const addPerson = (event) =>{
     event.preventDefault()
@@ -19,7 +30,20 @@ const App = () => {
       const result = window.confirm(`${newName} is already added to phonebook, replace the olnumber with a new one?`)
       if (result){
         updatePerson(person.id, personChanged)
-        .then(data => setPersons(persons.map(p => p.name !== newName ? p: data)))
+        .then(data => {
+          setPersons(persons.map(p => p.name !== newName ? p: data))
+          setMessage([`${person.name}'s information has been updated`,'info'])
+          setTimeout(() => {
+            setMessage([null])
+          },5000)
+        }).catch(error =>{
+          setMessage(
+            [`${person.name} is not registered`,'error']
+          )
+          setTimeout(() => {
+            setMessage([null])
+          }, 5000)
+        })
       }
     }else{
       const person = {
@@ -30,6 +54,10 @@ const App = () => {
       createPerson(person)
       .then(data => {
         setPersons(persons.concat(data))
+        setMessage([`${person.name} added`,'info'])
+        setTimeout(() => {
+          setMessage([null])
+        },5000)
         setNewName('')
         setNewNumber('')
       })
@@ -69,6 +97,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter value={filter} changeValue={changeFilter}/>
+      <Notification message={message}/>
       <h2>Add a new person</h2>
       <PersonForm 
             name={newName} 
